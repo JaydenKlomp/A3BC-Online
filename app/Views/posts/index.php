@@ -61,7 +61,7 @@ require_once APPPATH . 'Helpers/TimeHelper.php';
                     <?php endforeach; ?>
                 </div>
             <?php else : ?>
-                <p class="text-muted">No posts yet. Be the first to share!</p>
+                <p class="text-muted">No posts yet. You could be the first to share!</p>
             <?php endif; ?>
         </main>
 
