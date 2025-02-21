@@ -1,5 +1,6 @@
 <?php
 require_once APPPATH . 'Helpers/TimeHelper.php';
+/** @var $trendingPosts */
 ?>
 
 <?= $this->extend('layout') ?>
@@ -14,6 +15,7 @@ require_once APPPATH . 'Helpers/TimeHelper.php';
             <div class="post-container p-3 mb-4">
                 <!-- Voting System -->
                 <?php
+                /** @var $post */
                 $userVotedUp = isset($_SESSION['user_votes'][$post['id']]) && $_SESSION['user_votes'][$post['id']] === 'upvotes';
                 $userVotedDown = isset($_SESSION['user_votes'][$post['id']]) && $_SESSION['user_votes'][$post['id']] === 'downvotes';
                 ?>
@@ -92,7 +94,8 @@ require_once APPPATH . 'Helpers/TimeHelper.php';
             <?php } ?>
 
             <!-- Render All Comments -->
-            <?= renderComments($comments) ?>
+            <?= /** @var $comments */
+            renderComments($comments) ?>
 
 
         </div>
