@@ -2,10 +2,6 @@
 require_once APPPATH . 'Helpers/TimeHelper.php';
 ?>
 
-<?php
-require_once APPPATH . 'Helpers/TimeHelper.php';
-?>
-
 <?= $this->extend('layout') ?>
 
 <?= $this->section('content') ?>

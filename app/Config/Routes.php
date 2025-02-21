@@ -16,4 +16,7 @@ $routes->post('posts/comment', 'Posts::addComment');
 $routes->post('posts/comment/vote', 'Posts::voteComment');
 $routes->post('posts/comment/add', 'Posts::addComment');
 $routes->get('/', 'Posts::landing');
+$routes->get('dashboard', 'Dashboard::index');
+$routes->get('dashboard/getChartData', 'Dashboard::getChartData');
+
 
