@@ -1,68 +1,124 @@
-# CodeIgniter 4 Application Starter
+# 🚀 A3BC Online - A Reddit-Inspired Community Platform
 
-## What is CodeIgniter?
 
-CodeIgniter is a PHP full-stack web framework that is light, fast, flexible and secure.
-More information can be found at the [official site](https://codeigniter.com).
+![PHP](https://img.shields.io/badge/PHP-8.1-blue) ![CodeIgniter](https://img.shields.io/badge/CodeIgniter-4.3-red) ![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-purple)
 
-This repository holds a composer-installable app starter.
-It has been built from the
-[development repository](https://github.com/codeigniter4/CodeIgniter4).
+A3BC Online is a **Reddit-style discussion platform** built using **CodeIgniter 4** and **Bootstrap**. Users can create posts, comment, upvote/downvote, and interact with content just like on Reddit. 🔥
 
-More information about the plans for version 4 can be found in [CodeIgniter 4](https://forum.codeigniter.com/forumdisplay.php?fid=28) on the forums.
+---
 
-You can read the [user guide](https://codeigniter.com/user_guide/)
-corresponding to the latest version of the framework.
+## 📌 Features
+✅ **User-Generated Content** – Create, view, and comment on posts  
+✅ **Upvote & Downvote System** – Vote on posts and comments dynamically  
+✅ **Comment Nesting** – Reply to comments in a Reddit-style thread  
+✅ **Sorting Options** – Sort posts by `Hot`, `New`, `Top`, or `Rising`  
+✅ **Dashboard Analytics** – View total posts, comments, upvotes/downvotes with graphs  
+✅ **Dark Mode UI** – Inspired by Reddit's modern dark theme  
+✅ **Customizable Communities (WIP)** – Users can create & manage communities
 
-## Installation & updates
+---
 
-`composer create-project codeigniter4/appstarter` then `composer update` whenever
-there is a new release of the framework.
+## 🛠️ Tech Stack
+| Technology  | Description |
+|-------------|------------|
+| 🐘 PHP 8.1 | Backend language |
+| 🔥 CodeIgniter 4 | PHP MVC Framework |
+| 🎨 Bootstrap 5.3 | Responsive UI Framework |
+| ⚡ JavaScript (Vanilla) | Client-side interactions |
+| 📊 Chart.js | Data visualization for analytics |
+| 🛢️ MySQL | Database for storing posts & comments |
+| 🎛️ PhpMyAdmin | Database management |
 
-When updating, check the release notes to see if there are any changes you might need to apply
-to your `app` folder. The affected files can be copied or merged from
-`vendor/codeigniter4/framework/app`.
+---
 
-## Setup
+## 🚀 Installation Guide
+### 1️⃣ Clone the Repository
+```bash
+git clone https://github.com/JaydenKlomp/a3bc-online.git
+cd a3bc-online
+```
 
-Copy `env` to `.env` and tailor for your app, specifically the baseURL
-and any database settings.
+### 2️⃣ Set Up CodeIgniter
+```bash
+composer install
+cp env .env  # Copy env file
+```
+🔹 **Configure the `.env` file** to match your database settings:
+```
+database.default.hostname = localhost
+database.default.database = a3bc
+database.default.username = root
+database.default.password =
+database.default.DBDriver = MySQLi
+```
 
-## Important Change with index.php
+### 3️⃣ Import the Database
+- Import `database.sql` into MySQL using PhpMyAdmin or CLI:
+```bash
+mysql -u root -p a3bc < database.sql
+```
 
-`index.php` is no longer in the root of the project! It has been moved inside the *public* folder,
-for better security and separation of components.
+### 4️⃣ Start the Development Server
+```bash
+php spark serve
+```
+🚀 Visit: **[http://localhost:8080](http://localhost:8080)**
 
-This means that you should configure your web server to "point" to your project's *public* folder, and
-not to the project root. A better practice would be to configure a virtual host to point there. A poor practice would be to point your web server to the project root and expect to enter *public/...*, as the rest of your logic and the
-framework are exposed.
+---
 
-**Please** read the user guide for a better explanation of how CI4 works!
+## 📊 Dashboard Analytics
+The **Dashboard** provides real-time insights into the platform:
+- 📈 **Total Posts, Comments, Upvotes, Downvotes**
+- 📊 **Graph: Posts created per day/week/month**
+- 🔍 **Filter by Date, Time, and Type**
 
-## Repository Management
+---
 
-We use GitHub issues, in our main repository, to track **BUGS** and to track approved **DEVELOPMENT** work packages.
-We use our [forum](http://forum.codeigniter.com) to provide SUPPORT and to discuss
-FEATURE REQUESTS.
+## 🔧 Folder Structure
+```
+📂 a3bc-online/
+│── 📁 app/                  # CodeIgniter core files
+│   ├── 📁 Controllers/      # Handles requests (Posts.php, Dashboard.php)
+│   ├── 📁 Models/           # Handles database queries (PostModel.php, CommentModel.php)
+│   ├── 📁 Views/            # UI pages (index.php, create.php, dashboard.php)
+│── 📁 public/               # Frontend assets
+│   ├── 📁 css/              # Stylesheets
+│   ├── 📁 js/               # JavaScript logic
+│   ├── 📁 images/           # Static assets
+│── 📁 writable/             # Cache, logs, uploads
+│── 📄 .env                  # Environment variables
+│── 📄 README.md             # This file
+│── 📄 database.sql          # Database structure
+```
 
-This repository is a "distribution" one, built by our release preparation script.
-Problems with it can be raised on our forum, or as issues in the main repository.
+---
 
-## Server Requirements
+## 🌟 Contributing
+We welcome contributions! Follow these steps:
+1. 🍴 Fork the repository
+2. 🌿 Create a new branch (`git checkout -b feature-name`)
+3. 🛠️ Make your changes
+4. 🚀 Commit and push (`git commit -m "Added new feature" && git push origin feature-name`)
+5. 🔁 Open a Pull Request
 
-PHP version 8.1 or higher is required, with the following extensions installed:
+---
 
-- [intl](http://php.net/manual/en/intl.requirements.php)
-- [mbstring](http://php.net/manual/en/mbstring.installation.php)
+## 📝 To-Do List
+✅ **Basic Reddit-style layout**  
+✅ **Sorting & filtering options**  
+✅ **Voting system for posts/comments**  
+✅ **Dashboard with statistics**  
+🔲 **User authentication system**  
+🔲 **Community-based subforums**  
+🔲 **Notifications & moderation tools**
 
-> [!WARNING]
-> - The end of life date for PHP 7.4 was November 28, 2022.
-> - The end of life date for PHP 8.0 was November 26, 2023.
-> - If you are still using PHP 7.4 or 8.0, you should upgrade immediately.
-> - The end of life date for PHP 8.1 will be December 31, 2025.
+---
 
-Additionally, make sure that the following extensions are enabled in your PHP:
+## 📜 License
+This project is **open-source** and available under the **MIT License**.
 
-- json (enabled by default - don't turn it off)
-- [mysqlnd](http://php.net/manual/en/mysqlnd.install.php) if you plan to use MySQL
-- [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
+---
+
+👨‍💻 **Developed by [Jayden Klomp](https://github.com/JaydenKlomp)**  
+🔗 **GitHub Repository:** [A3BC Online](https://github.com/JaydenKlomp/a3bc-online)
+
