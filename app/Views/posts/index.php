@@ -1,5 +1,6 @@
 <?php
 require_once APPPATH . 'Helpers/TimeHelper.php';
+/** @var int $currentSort */
 ?>
 
 <?= $this->extend('layout') ?>
