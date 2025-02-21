@@ -94,42 +94,37 @@ class Posts extends BaseController
 // Verwerkt upvotes en downvotes op posts
     public function vote()
     {
-        $postId = $this
-            ->request
-            ->getPost('post_id');
-        $voteType = $this
-            ->request
-            ->getPost('vote_type');
-        $action = $this
-            ->request
-            ->getPost('action');
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        $postId = $this->request->getPost('post_id');
+        $voteType = $this->request->getPost('vote_type'); // 'upvotes' or 'downvotes'
+        $action = $this->request->getPost('action'); // 'add' or 'remove'
 
         $model = new PostModel();
         $post = $model->find($postId);
 
-        if (!$post)
-        {
-            return $this
-                ->response
-                ->setJSON(['success' => false, 'message' => 'Ongeldige post ID']);
+        if (!$post) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Ongeldige post ID']);
         }
 
-        // Stem toevoegen of verwijderen
-        if ($action === 'add')
-        {
+        if ($action === 'add') {
             $model->incrementVote($postId, $voteType);
-        }
-        elseif ($action === 'remove')
-        {
+            $_SESSION['user_votes'][$postId] = $voteType; // Store user vote
+        } elseif ($action === 'remove') {
             $model->decrementVote($postId, $voteType);
+            unset($_SESSION['user_votes'][$postId]); // Remove vote state
         }
 
-        // Update de post en retourneer nieuwe stemwaarden
         $updatedPost = $model->find($postId);
-        return $this
-            ->response
-            ->setJSON(['success' => true, 'upvotes' => $updatedPost['upvotes'], 'downvotes' => $updatedPost['downvotes']]);
+        return $this->response->setJSON([
+            'success' => true,
+            'upvotes' => $updatedPost['upvotes'],
+            'downvotes' => $updatedPost['downvotes']
+        ]);
     }
+
 
 // Verwerkt upvotes en downvotes op reacties
     public function voteComment()
