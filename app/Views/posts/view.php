@@ -1,5 +1,6 @@
 <?php
 require_once APPPATH . 'Helpers/TimeHelper.php';
+/** @var $trendingPosts */
 ?>
 
 <?= $this->extend('layout') ?>
@@ -13,13 +14,23 @@ require_once APPPATH . 'Helpers/TimeHelper.php';
         <div class="col-md-8">
             <div class="post-container p-3 mb-4">
                 <!-- Voting System -->
+                <?php
+                /** @var $post */
+                $userVotedUp = isset($_SESSION['user_votes'][$post['id']]) && $_SESSION['user_votes'][$post['id']] === 'upvotes';
+                $userVotedDown = isset($_SESSION['user_votes'][$post['id']]) && $_SESSION['user_votes'][$post['id']] === 'downvotes';
+                ?>
                 <div class="vote-column">
-                    <button class="vote-btn upvote" data-post-id="<?= $post['id'] ?>">▲</button>
+                    <button class="vote-btn upvote <?= $userVotedUp ? 'voted' : '' ?>"
+                            data-post-id="<?= $post['id'] ?>"
+                            style="color: <?= $userVotedUp ? '#ff4500' : '#818384' ?>">▲</button>
                     <div class="vote-count" id="vote-count-<?= $post['id'] ?>">
                         <?= $post['upvotes'] - $post['downvotes'] ?>
                     </div>
-                    <button class="vote-btn downvote" data-post-id="<?= $post['id'] ?>">▼</button>
+                    <button class="vote-btn downvote <?= $userVotedDown ? 'voted' : '' ?>"
+                            data-post-id="<?= $post['id'] ?>"
+                            style="color: <?= $userVotedDown ? '#7193ff' : '#818384' ?>">▼</button>
                 </div>
+
 
                 <!-- Post Content -->
                 <div class="post-content">
@@ -83,7 +94,8 @@ require_once APPPATH . 'Helpers/TimeHelper.php';
             <?php } ?>
 
             <!-- Render All Comments -->
-            <?= renderComments($comments) ?>
+            <?= /** @var $comments */
+            renderComments($comments) ?>
 
 
         </div>
