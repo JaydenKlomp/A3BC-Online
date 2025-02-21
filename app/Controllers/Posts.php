@@ -91,7 +91,7 @@ class Posts extends BaseController
         return redirect()->to('/posts');
     }
 
-// Verwerkt upvotes en downvotes op posts
+    // Verwerkt upvotes en downvotes op posts
     public function vote()
     {
         if (session_status() == PHP_SESSION_NONE) {
@@ -100,7 +100,7 @@ class Posts extends BaseController
 
         $postId = $this->request->getPost('post_id');
         $voteType = $this->request->getPost('vote_type'); // 'upvotes' or 'downvotes'
-        $action = $this->request->getPost('action'); // 'add' or 'remove'
+        $action = $this->request->getPost('action'); // 'add', 'remove', 'switch'
 
         $model = new PostModel();
         $post = $model->find($postId);
@@ -109,12 +109,20 @@ class Posts extends BaseController
             return $this->response->setJSON(['success' => false, 'message' => 'Ongeldige post ID']);
         }
 
+        // Get current vote state
+        $userVote = $_SESSION['user_votes'][$postId] ?? null;
+
         if ($action === 'add') {
             $model->incrementVote($postId, $voteType);
-            $_SESSION['user_votes'][$postId] = $voteType; // Store user vote
+            $_SESSION['user_votes'][$postId] = $voteType;
         } elseif ($action === 'remove') {
             $model->decrementVote($postId, $voteType);
-            unset($_SESSION['user_votes'][$postId]); // Remove vote state
+            unset($_SESSION['user_votes'][$postId]);
+        } elseif ($action === 'switch') {
+            $oppositeVoteType = ($voteType === 'upvotes') ? 'downvotes' : 'upvotes';
+            $model->decrementVote($postId, $oppositeVoteType);
+            $model->incrementVote($postId, $voteType);
+            $_SESSION['user_votes'][$postId] = $voteType;
         }
 
         $updatedPost = $model->find($postId);
@@ -126,45 +134,50 @@ class Posts extends BaseController
     }
 
 
-// Verwerkt upvotes en downvotes op reacties
+
+
+    // Verwerkt upvotes en downvotes op reacties
     public function voteComment()
     {
-        $commentId = $this
-            ->request
-            ->getPost('comment_id');
-        $voteType = $this
-            ->request
-            ->getPost('vote_type');
-        $action = $this
-            ->request
-            ->getPost('action');
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        $commentId = $this->request->getPost('comment_id');
+        $voteType = $this->request->getPost('vote_type'); // 'upvotes' or 'downvotes'
+        $action = $this->request->getPost('action'); // 'add', 'remove', 'switch'
 
         $model = new CommentModel();
         $comment = $model->find($commentId);
 
-        if (!$comment)
-        {
-            return $this
-                ->response
-                ->setJSON(['success' => false, 'message' => 'Ongeldige comment ID']);
+        if (!$comment) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Ongeldige comment ID']);
         }
 
-        // Stem toevoegen of verwijderen
-        if ($action === 'add')
-        {
+        // Get current vote state
+        $userVote = $_SESSION['user_votes'][$commentId] ?? null;
+
+        if ($action === 'add') {
             $model->incrementVote($commentId, $voteType);
-        }
-        elseif ($action === 'remove')
-        {
+            $_SESSION['user_votes'][$commentId] = $voteType; // Store user vote
+        } elseif ($action === 'remove') {
             $model->decrementVote($commentId, $voteType);
+            unset($_SESSION['user_votes'][$commentId]); // Remove vote state
+        } elseif ($action === 'switch') {
+            $oppositeVoteType = ($voteType === 'upvotes') ? 'downvotes' : 'upvotes';
+            $model->decrementVote($commentId, $oppositeVoteType); // Remove previous vote
+            $model->incrementVote($commentId, $voteType); // Add new vote
+            $_SESSION['user_votes'][$commentId] = $voteType;
         }
 
-        // Update de comment en retourneer nieuwe stemwaarden
         $updatedComment = $model->find($commentId);
-        return $this
-            ->response
-            ->setJSON(['success' => true, 'upvotes' => $updatedComment['upvotes'], 'downvotes' => $updatedComment['downvotes']]);
+        return $this->response->setJSON([
+            'success' => true,
+            'upvotes' => $updatedComment['upvotes'],
+            'downvotes' => $updatedComment['downvotes']
+        ]);
     }
+
 
 // Voegt een nieuwe reactie toe aan een post of een andere reactie
     public function addComment()

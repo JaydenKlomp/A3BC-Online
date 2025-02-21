@@ -17,21 +17,16 @@ class PostModel extends Model
      */
     public function incrementVote($postId, $voteType)
     {
-        $this->set($voteType, "$voteType + 1", false) // Verhoog vote met 1
-        ->where('id', $postId)
+        $this->set($voteType, "$voteType + 1", false)
+            ->where('id', $postId)
             ->update();
     }
 
-    /**
-     * Verlaagt het aantal upvotes of downvotes voor een post.
-     *
-     * @param int $postId De ID van de post
-     * @param string $voteType 'upvotes' of 'downvotes'
-     */
     public function decrementVote($postId, $voteType)
     {
-        $this->set($voteType, "$voteType - 1", false) // Verlaag vote met 1
-        ->where('id', $postId)
+        $this->set($voteType, "$voteType - 1", false)
+            ->where('id', $postId)
             ->update();
     }
+
 }

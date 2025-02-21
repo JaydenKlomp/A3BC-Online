@@ -6,7 +6,17 @@ document.addEventListener("DOMContentLoaded", function () {
             let voteType = button.classList.contains('upvote') ? 'upvotes' : 'downvotes';
             let voteCountElem = document.getElementById(`comment-vote-count-${commentId}`);
 
-            let action = button.classList.contains("voted") ? "remove" : "add"; // Check if already voted
+            let action = "add"; // Default action
+            let hasVoted = button.classList.contains("voted"); // Check if already voted
+
+            let oppositeButton = document.querySelector(`[data-comment-id="${commentId}"].${voteType === "upvotes" ? "downvote" : "upvote"}`);
+            let oppositeVoted = oppositeButton && oppositeButton.classList.contains("voted");
+
+            if (hasVoted) {
+                action = "remove"; // Remove vote if clicked again
+            } else if (oppositeVoted) {
+                action = "switch"; // Switch vote if the other vote was previously selected
+            }
 
             fetch('/posts/comment/vote', {
                 method: 'POST',
@@ -24,8 +34,8 @@ document.addEventListener("DOMContentLoaded", function () {
                             btn.style.color = "#818384";
                         });
 
-                        // Apply color to the selected button
-                        if (action === "add") {
+                        // Apply color to the selected button if it's an add or switch action
+                        if (action === "add" || action === "switch") {
                             button.classList.add("voted");
                             button.style.color = voteType === "upvotes" ? "#ff4500" : "#7193ff";
                         }
@@ -42,7 +52,17 @@ document.addEventListener("DOMContentLoaded", function () {
             let voteType = button.classList.contains('upvote') ? 'upvotes' : 'downvotes';
             let voteCountElem = document.getElementById(`vote-count-${postId}`);
 
-            let action = button.classList.contains("voted") ? "remove" : "add";
+            let action = "add"; // Default action
+            let hasVoted = button.classList.contains("voted"); // Check if already voted
+
+            let oppositeButton = document.querySelector(`[data-post-id="${postId}"].${voteType === "upvotes" ? "downvote" : "upvote"}`);
+            let oppositeVoted = oppositeButton && oppositeButton.classList.contains("voted");
+
+            if (hasVoted) {
+                action = "remove"; // Remove vote if clicked again
+            } else if (oppositeVoted) {
+                action = "switch"; // Switch vote if the other vote was previously selected
+            }
 
             fetch('/posts/vote', {
                 method: 'POST',
@@ -60,8 +80,8 @@ document.addEventListener("DOMContentLoaded", function () {
                             btn.style.color = "#818384";
                         });
 
-                        // Apply color to the selected button
-                        if (action === "add") {
+                        // Apply color to the selected button if it's an add or switch action
+                        if (action === "add" || action === "switch") {
                             button.classList.add("voted");
                             button.style.color = voteType === "upvotes" ? "#ff4500" : "#7193ff";
                         }
