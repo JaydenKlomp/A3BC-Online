@@ -7,7 +7,7 @@ class CommentModel extends Model
 {
     protected $table = 'comments';
     protected $primaryKey = 'id';
-    protected $allowedFields = ['post_id', 'content', 'created_at', 'upvotes', 'downvotes', 'parent_id'];
+    protected $allowedFields = ['post_id', 'content', 'created_at', 'upvotes', 'downvotes', 'parent_id', 'user_id'];
 
     public function incrementVote($commentId, $voteType)
     {
@@ -44,6 +44,14 @@ class CommentModel extends Model
         }
         return $tree;
     }
+
+    public function getCommentsByUser($userId)
+    {
+        return $this->where('user_id', $userId)
+            ->orderBy('created_at', 'DESC')
+            ->findAll();
+    }
+
 
 
 }

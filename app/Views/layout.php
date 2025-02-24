@@ -1,3 +1,9 @@
+<?php
+$session = session(); // Load the session service
+$isLoggedIn = $session->has('user_id'); // Check if user_id exists in session
+$username = $session->get('username') ?? 'Guest'; // Default to 'Guest' if missing
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,12 +37,21 @@
             <div class="dropdown">
                 <img src="<?= base_url('images/userprofile.png') ?>" alt="User" class="profile-pic" id="profileDropdown" data-bs-toggle="dropdown">
                 <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a class="dropdown-item" href="#">View Profile</a></li>
-                    <li><a class="dropdown-item" href="#">Edit Avatar</a></li>
-                    <li><a class="dropdown-item" href="#">Achievements</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="#">Settings</a></li>
-                    <li><a class="dropdown-item" href="#">Log Out</a></li>
+                    <?php if ($isLoggedIn): ?>
+                        <li class="dropdown-header text-center">
+                            <strong><?= htmlspecialchars($username) ?></strong> <!-- Display username inside dropdown -->
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="<?= site_url('profile/' . $username) ?>">View Profile</a></li>
+                        <li><a class="dropdown-item" href="<?= site_url('edit-avatar') ?>">Edit Avatar</a></li>
+                        <li><a class="dropdown-item" href="<?= site_url('achievements') ?>">Achievements</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="<?= site_url('settings') ?>">Settings</a></li>
+                        <li><a class="dropdown-item" href="<?= site_url('logout') ?>">Log Out</a></li>
+                    <?php else: ?>
+                        <li><a class="dropdown-item" href="<?= site_url('login') ?>">Log In</a></li>
+                        <li><a class="dropdown-item" href="<?= site_url('register') ?>">Register</a></li>
+                    <?php endif; ?>
                 </ul>
             </div>
         </div>

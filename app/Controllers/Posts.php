@@ -64,7 +64,8 @@ class Posts extends BaseController
             ->request
             ->getPost('title') , 'content' => $this
             ->request
-            ->getPost('content') ?? '', 'created_at' => date('Y-m-d H:i:s') , ];
+            ->getPost('content') ?? '', 'created_at' => date('Y-m-d H:i:s') , 'user_id' => $session->get('user_id')];
+
 
         // Verwerk afbeelding (indien toegevoegd)
         $image = $this

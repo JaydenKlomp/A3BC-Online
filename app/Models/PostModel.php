@@ -7,7 +7,8 @@ class PostModel extends Model
 {
     protected $table = 'posts'; // Tabelnaam in de database
     protected $primaryKey = 'id'; // Primaire sleutel van de tabel
-    protected $allowedFields = ['title', 'content', 'image', 'link', 'created_at', 'upvotes', 'downvotes']; // Toegestane velden voor mass assignment
+    protected $allowedFields = ['title', 'content', 'image', 'link', 'created_at', 'upvotes', 'downvotes', 'user_id'];
+
 
     /**
      * Verhoogt het aantal upvotes of downvotes voor een post.
@@ -28,5 +29,13 @@ class PostModel extends Model
             ->where('id', $postId)
             ->update();
     }
+
+    public function getPostsByUser($userId)
+    {
+        return $this->where('user_id', $userId)
+            ->orderBy('created_at', 'DESC')
+            ->findAll();
+    }
+
 
 }
