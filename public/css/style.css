@@ -44,15 +44,13 @@ body {
     object-fit: cover;
     cursor: pointer;
 }
-.post-card,
-.comment-card {
+.post-card {
     background-color: #282828;
     border: 1px solid #383838;
     color: #ffffff;
+    display: flex;
     padding: 15px;
     border-radius: 5px;
-    margin-bottom: 10px;
-    transition: background 0.3s;
 }
 .post-votes {
     display: flex;
@@ -493,16 +491,21 @@ a:hover {
     text-align: center;
 }
 
+/* ============================
+   📌 Profielpagina Styling
+   ============================ */
 .profile-container {
     display: flex;
     gap: 20px;
+    padding: 20px;
 }
 
 .profile-sidebar {
-    width: 300px;
+    width: 280px;
     background: #1a1a1b;
     padding: 20px;
     border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
 }
 
 .profile-banner img {
@@ -513,8 +516,8 @@ a:hover {
 }
 
 .profile-avatar {
-    width: 80px;
-    height: 80px;
+    width: 90px;
+    height: 90px;
     border-radius: 50%;
     margin: 10px auto;
     display: block;
@@ -524,21 +527,19 @@ a:hover {
     text-align: center;
 }
 
-.achievements {
-    list-style: none;
-    padding: 0;
-}
-
 .profile-content {
     flex-grow: 1;
     background: #1a1a1b;
     padding: 20px;
     border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
 }
 
+/* Tabs */
 .profile-tabs {
     display: flex;
     border-bottom: 2px solid #333;
+    margin-bottom: 15px;
 }
 
 .tab-btn {
@@ -549,17 +550,73 @@ a:hover {
     color: #ccc;
     cursor: pointer;
     font-weight: bold;
+    transition: color 0.3s ease;
 }
 
-.tab-btn.active {
+.tab-btn:hover, .tab-btn.active {
     color: #ff4500;
 }
 
-.tab-content {
-    display: none;
-    padding-top: 10px;
+/* Post Cards */
+.post-card-profile {
+    background: #282828;
+    border: 1px solid #3a3a3a;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    transition: background 0.3s ease;
 }
 
-.tab-content.active {
-    display: block;
+.post-card-profile:hover {
+    background: #323232;
 }
+
+.post-card-profile h3 a {
+    color: #ff4500;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.post-card-profile h3 a:hover {
+    text-decoration: underline;
+}
+
+.post-excerpt {
+    font-size: 14px;
+    color: #d7dadc;
+    margin-top: 5px;
+}
+
+.post-meta {
+    font-size: 12px;
+    color: #b0b3b8;
+}
+
+/* Comment Cards */
+.comment-card {
+    background: #252525;
+    border: 1px solid #3a3a3a;
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 6px;
+    transition: background 0.3s ease;
+}
+
+.comment-card:hover {
+    background: #303030;
+}
+
+.comment-card p a {
+    color: #ff4500;
+    text-decoration: none;
+}
+
+.comment-card p a:hover {
+    text-decoration: underline;
+}
+
+.comment-meta {
+    font-size: 12px;
+    color: #b0b3b8;
+}
+

@@ -36,9 +36,15 @@ require_once APPPATH . 'Helpers/TimeHelper.php';
                 <div class="post-content">
                     <h2 class="post-title"><?= esc($post['title']) ?></h2>
                     <p class="post-meta text-lightgray">
-                        Posted <?= time_elapsed_string($post['created_at']) ?>
+                        Posted by
+                        <strong>
+                            <?= ($post['role'] === 'admin') ? '<span style="color: gold;">[ADMIN] ' . esc($post['username']) . '</span>' : esc($post['username']); ?>
+                        </strong>
+                        • <?= time_elapsed_string($post['created_at']) ?>
                     </p>
+
                     <p><?= esc($post['content']) ?></p>
+
                 </div>
             </div>
 
@@ -71,9 +77,14 @@ require_once APPPATH . 'Helpers/TimeHelper.php';
                         </div>
 
                         <div class="comment-content">
-                            <p class="comment-meta text-lightgray">
-                                Posted <?= time_elapsed_string($comment['created_at']) ?>
+                            <p class="comment-meta">
+                                Posted by
+                                <strong>
+                                    <?= ($comment['role'] === 'admin') ? '<span style="color: gold;">[ADMIN] ' . esc($comment['username']) . '</span>' : esc($comment['username']); ?>
+                                </strong>
+                                • <?= time_elapsed_string($comment['created_at']) ?>
                             </p>
+
                             <p><?= esc($comment['content']) ?></p>
 
                             <!-- Reply Form -->

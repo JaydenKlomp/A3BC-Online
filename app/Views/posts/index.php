@@ -50,9 +50,14 @@ require_once APPPATH . 'Helpers/TimeHelper.php';
                                 </h5>
                                 <p><?= substr(esc($post['content']), 0, 100) ?>...</p>
                                 <p class="post-meta">
-                                    Posted by <strong>Anonymous</strong> • <?= time_elapsed_string($post['created_at']) ?>
+                                    Posted by
+                                    <strong>
+                                        <?= ($post['role'] === 'admin') ? '<span style="color: gold;">[ADMIN] ' . esc($post['username']) . '</span>' : esc($post['username']); ?>
+                                    </strong>
+                                    • <?= time_elapsed_string($post['created_at']) ?>
                                     • <a href="<?= site_url('posts/' . $post['id']) ?>">💬 <?= $post['comment_count'] ?> Comments</a>
                                 </p>
+
                             </div>
                         </div>
                     <?php endforeach; ?>

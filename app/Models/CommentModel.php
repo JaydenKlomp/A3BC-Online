@@ -52,6 +52,16 @@ class CommentModel extends Model
             ->findAll();
     }
 
+    public function getCommentsWithUser($postId)
+    {
+        return $this->select('comments.*, users.username, users.role')
+            ->join('users', 'users.id = comments.user_id')
+            ->where('post_id', $postId)
+            ->orderBy('comments.created_at', 'ASC')
+            ->findAll();
+    }
+
+
 
 
 }

@@ -1,8 +1,10 @@
 <?php
-$session = session(); // Load the session service
-$isLoggedIn = $session->has('user_id'); // Check if user_id exists in session
-$username = $session->get('username') ?? 'Guest'; // Default to 'Guest' if missing
+$session = session();
+$isLoggedIn = $session->has('user_id');
+$username = $session->get('username') ?? 'Guest';
+$role = $session->get('role') ?? 'user'; // Haal de rol op uit de sessie
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -31,7 +33,10 @@ $username = $session->get('username') ?? 'Guest'; // Default to 'Guest' if missi
         <div class="d-flex align-items-center">
             <a class="btn btn-primary me-3" href="<?= site_url('posts') ?>">View Posts</a>
             <a class="btn btn-primary me-3" href="<?= site_url('posts/create') ?>">Create Post</a>
-            <a class="btn btn-primary me-3" href="<?= site_url('dashboard') ?>">Dashboard</a>
+            <?php if ($role === 'admin'): ?>
+                <a class="btn btn-primary me-3" href="<?= site_url('dashboard') ?>">Dashboard</a>
+            <?php endif; ?>
+
 
             <!-- Profile Dropdown -->
             <div class="dropdown">

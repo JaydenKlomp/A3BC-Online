@@ -36,8 +36,18 @@ require_once APPPATH . 'Helpers/TimeHelper.php';
                             </h5>
                             <p><?= substr(esc($post['content']), 0, 100) ?>...</p>
                             <p class="post-meta">
-                                Posted by <strong>Anonymous</strong> • <?= time_elapsed_string($post['created_at']) ?>
+                                Posted by
+                                <?php
+                                $username = isset($post['username']) ? esc($post['username']) : 'Anonymous';
+                                $role = isset($post['role']) ? $post['role'] : '';
+                                ?>
+                                <strong>
+                                    <?= ($role === 'admin') ? '<span style="color: gold;">[ADMIN] ' . $username . '</span>' : $username; ?>
+                                </strong>
+
+                                • <?= time_elapsed_string($post['created_at']) ?>
                             </p>
+
                             <a href="<?= site_url('posts/' . $post['id']) ?>" class="btn btn-sm btn-primary">Read More</a>
                         </div>
                     </div>

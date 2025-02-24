@@ -26,6 +26,15 @@ $routes->get('dashboard/getChartData', 'Dashboard::getChartData');
 $routes->get('login', 'Auth::login');
 $routes->get('register', 'Auth::register');
 $routes->get('logout', 'Auth::logout');
+
 $routes->post('auth/login', 'Auth::attemptLogin');
 $routes->post('auth/register', 'Auth::attemptRegister');
+$routes->get('auth/verify/(:segment)', 'Auth::verifyEmail/$1');
+$routes->get('email/confirm', function() {
+    return view('email/confirm');
+});
+$routes->get('email/confirmed', function() {
+    return view('email/confirmed');
+});
 
+$routes->get('test-email', 'MailTest::sendTestEmail');

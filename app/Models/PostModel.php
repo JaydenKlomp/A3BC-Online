@@ -9,33 +9,49 @@ class PostModel extends Model
     protected $primaryKey = 'id'; // Primaire sleutel van de tabel
     protected $allowedFields = ['title', 'content', 'image', 'link', 'created_at', 'upvotes', 'downvotes', 'user_id'];
 
-
     /**
-     * Verhoogt het aantal upvotes of downvotes voor een post.
-     *
-     * @param int $postId De ID van de post
-     * @param string $voteType 'upvotes' of 'downvotes'
+     * Haal alle posts op met bijbehorende gebruikersinformatie
      */
-    public function incrementVote($postId, $voteType)
+    public function getPostsWithUser()
     {
-        $this->set($voteType, "$voteType + 1", false)
-            ->where('id', $postId)
-            ->update();
-    }
-
-    public function decrementVote($postId, $voteType)
-    {
-        $this->set($voteType, "$voteType - 1", false)
-            ->where('id', $postId)
-            ->update();
-    }
-
-    public function getPostsByUser($userId)
-    {
-        return $this->where('user_id', $userId)
-            ->orderBy('created_at', 'DESC')
+        return $this->select('posts.*, users.username, users.role')
+            ->join('users', 'users.id = posts.user_id', 'left')
+            ->orderBy('posts.created_at', 'DESC')
             ->findAll();
     }
 
+    /**
+     * Haal een specifieke post op met bijbehorende gebruikersinformatie
+     */
+    public function getPostWithUserById($id)
+    {
+        return $this->select('posts.*, users.username, users.role')
+            ->join('users', 'users.id = posts.user_id', 'left')
+            ->where('posts.id', $id)
+            ->first();
+    }
 
+    /**
+     * Haal trending posts op met gebruikersinformatie
+     */
+    public function getTrendingPosts()
+    {
+        return $this->select('posts.*, users.username, users.role')
+            ->join('users', 'users.id = posts.user_id', 'left')
+            ->orderBy('posts.upvotes', 'DESC')
+            ->limit(5)
+            ->findAll();
+    }
+
+    /**
+     * Haal featured posts op met gebruikersinformatie
+     */
+    public function getFeaturedPosts()
+    {
+        return $this->select('posts.*, users.username, users.role')
+            ->join('users', 'users.id = posts.user_id', 'left')
+            ->orderBy('posts.created_at', 'DESC')
+            ->limit(3)
+            ->findAll();
+    }
 }
