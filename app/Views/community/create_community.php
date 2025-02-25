@@ -1,5 +1,4 @@
 <?= $this->extend('layout') ?>
-
 <?= $this->section('content') ?>
 
 <div class="create-community-container">
