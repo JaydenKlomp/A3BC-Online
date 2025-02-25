@@ -38,7 +38,8 @@ class Auth extends Controller
         $session->set([
             'user_id' => $user['id'],
             'username' => $user['username'],
-            'role' => $user['role'], // Voeg rol toe aan sessie
+            'role' => $user['role'],
+            'profile_picture' => $user['profile_picture'] ?? 'default.jpg',
         ]);
 
         return redirect()->to('/');
