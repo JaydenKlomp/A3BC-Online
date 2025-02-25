@@ -232,4 +232,35 @@ class Posts extends BaseController
             'downvotes' => $updatedComment['downvotes']
         ]);
     }
+
+    public function delete($postId)
+    {
+        $session = session();
+        $postModel = new PostModel();
+        $commentModel = new CommentModel();
+
+        $userId = $session->get('user_id');
+
+        // Get post details
+        $post = $postModel->find($postId);
+        if (!$post) {
+            return redirect()->to('/')->with('error', 'Post not found.');
+        }
+
+        // Check if the logged-in user is the owner
+        if ($post['user_id'] !== $userId) {
+            return redirect()->to('/')->with('error', 'You do not have permission to delete this post.');
+        }
+
+        // ✅ Delete all comments associated with the post
+        $commentModel->where('post_id', $postId)->delete();
+
+        // ✅ Delete the post itself
+        if ($postModel->delete($postId)) {
+            return redirect()->to('/')->with('success', 'Post deleted successfully.');
+        } else {
+            return redirect()->to('/posts/' . $postId)->with('error', 'Failed to delete post.');
+        }
+    }
+
 }

@@ -23,7 +23,6 @@
             <p><strong>Followers:</strong> <?= esc($user['followers']) ?></p>
             <p><strong>Joined:</strong> <?= date('F j, Y', strtotime($user['account_created'])) ?></p>
 
-            <!-- ✅ Show "Edit Profile" Button If the User is Viewing Their Own Profile -->
             <?php if (session()->get('username') === $user['username']): ?>
                 <hr>
                 <a href="<?= site_url('settings') ?>" class="btn btn-primary btn-sm mt-2">
@@ -46,13 +45,34 @@
             <?php if (!empty($posts)): ?>
                 <?php foreach ($posts as $post): ?>
                     <div class="post-card-profile">
-                        <h3>
-                            <a href="<?= site_url('posts/' . $post['id']) ?>">
-                                <?= esc($post['title']) ?>
-                            </a>
-                        </h3>
-                        <p class="post-excerpt"><?= esc(substr($post['content'], 0, 200)) ?>...</p>
-                        <span class="post-meta">🕒 <?= date('F j, Y', strtotime($post['created_at'])) ?></span>
+                        <!-- ✅ Voting System -->
+                        <div class="post-votes">
+                            <button class="vote-btn upvote" data-post-id="<?= $post['id'] ?>">▲</button>
+                            <div class="vote-count" id="vote-count-<?= $post['id'] ?>">
+                                <?= $post['upvotes'] - $post['downvotes'] ?>
+                            </div>
+                            <button class="vote-btn downvote" data-post-id="<?= $post['id'] ?>">▼</button>
+                        </div>
+
+                        <!-- ✅ Post Content -->
+                        <div class="post-content-with-image">
+                            <div class="post-text">
+                                <h3>
+                                    <a href="<?= site_url('posts/' . $post['id']) ?>">
+                                        <?= esc($post['title']) ?>
+                                    </a>
+                                </h3>
+                                <p class="post-excerpt"><?= esc(substr($post['content'], 0, 200)) ?>...</p>
+                                <span class="post-meta">🕒 <?= date('F j, Y', strtotime($post['created_at'])) ?></span>
+                            </div>
+
+                            <!-- ✅ Display Image If Available -->
+                            <?php if (!empty($post['image'])) : ?>
+                                <div class="post-image">
+                                    <img src="<?= base_url('images/posts/' . $post['image']) ?>" alt="Post Image">
+                                </div>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 <?php endforeach; ?>
             <?php else: ?>
@@ -64,7 +84,7 @@
         <div id="comments" class="tab-content">
             <?php if (!empty($comments)): ?>
                 <?php foreach ($comments as $comment): ?>
-                    <div class="post-card-profile">
+                    <div class="post-card-profile-comments">
                         <!-- ✅ Post Title (White, Not Clickable) -->
                         <h3 class="post-title-profile">
                             <?= esc($comment['post_title']) ?>

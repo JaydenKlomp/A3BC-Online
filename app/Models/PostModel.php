@@ -60,17 +60,18 @@ class PostModel extends Model
 
     public function updateUserKarma($userId)
     {
-        // Calculate the total upvotes received by the user across all posts
-        $karma = $this->selectSum('upvotes')
+        $karmaData = $this->select('SUM(upvotes) as total_upvotes, SUM(downvotes) as total_downvotes')
             ->where('user_id', $userId)
-            ->first()['upvotes'] ?? 0;
+            ->first();
 
-        // Update the user's karma in the users table
+        $karma = ($karmaData['total_upvotes'] ?? 0) - ($karmaData['total_downvotes'] ?? 0);
+
         return $this->db->table('users')
             ->where('id', $userId)
             ->set('karma', $karma)
             ->update();
     }
+
 
 
     public function incrementVote($postId, $voteType)
@@ -88,6 +89,16 @@ class PostModel extends Model
             ->where('id', $postId)
             ->update();
     }
+
+    // ✅ Delete a post and all associated comments
+    public function deletePostWithComments($postId)
+    {
+        $commentModel = new \App\Models\CommentModel();
+        $commentModel->where('post_id', $postId)->delete();
+
+        return $this->delete($postId);
+    }
+
 
 
 }

@@ -15,6 +15,8 @@ $routes->get('posts/create', 'Posts::create');
 $routes->post('posts/store', 'Posts::store');
 $routes->post('posts/vote', 'Posts::vote');
 $routes->get('posts/(:num)', 'Posts::view/$1');
+$routes->post('posts/delete/(:num)', 'Posts::delete/$1');
+
 
 $routes->post('posts/comment', 'Posts::addComment');
 $routes->post('posts/comment/vote', 'Posts::voteComment');

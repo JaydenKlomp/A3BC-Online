@@ -22,12 +22,10 @@ class Profile extends BaseController
         $posts = [];
         $comments = [];
 
-        // ✅ Fetch user posts
         if ($postModel->db->fieldExists('user_id', 'posts')) {
             $posts = $postModel->where('user_id', $user['id'])->orderBy('created_at', 'DESC')->findAll();
         }
 
-        // ✅ Fetch user comments & join with post title
         if ($commentModel->db->fieldExists('user_id', 'comments')) {
             $comments = $commentModel->select('comments.*, posts.title as post_title')
                 ->join('posts', 'posts.id = comments.post_id', 'left')
@@ -35,6 +33,13 @@ class Profile extends BaseController
                 ->orderBy('comments.created_at', 'DESC')
                 ->findAll();
         }
+
+        $user['karma'] = $postModel->select('SUM(upvotes) as total_upvotes, SUM(downvotes) as total_downvotes')
+            ->where('user_id', $user['id'])
+            ->first();
+
+        $user['karma'] = ($user['karma']['total_upvotes'] ?? 0) - ($user['karma']['total_downvotes'] ?? 0);
+
 
         $data = [
             'user' => $user,

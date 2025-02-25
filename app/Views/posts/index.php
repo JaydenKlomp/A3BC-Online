@@ -118,27 +118,9 @@ require_once APPPATH . 'Helpers/TimeHelper.php';
         margin-bottom: 10px;
     }
 
-    .post-content-with-image {
-        display: flex;
-        flex-grow: 1;
-        justify-content: space-between;
-    }
 
-    .post-text {
-        flex-grow: 1;
-    }
 
-    .post-image {
-        max-width: 120px;
-        max-height: 120px;
-        margin-left: 10px;
-    }
 
-    .post-image img {
-        max-width: 100%;
-        height: auto;
-        border-radius: 8px;
-    }
 </style>
 
 <?= $this->endSection() ?>

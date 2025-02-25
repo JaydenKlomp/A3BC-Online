@@ -53,14 +53,30 @@ require_once APPPATH . 'Helpers/TimeHelper.php';
                     <!-- ✅ Show Image If Post Has One (Styled) -->
                     <?php if (!empty($post['image'])) : ?>
                         <div class="post-image-container">
-                            <img src="<?= base_url('images/posts/' . $post['image']) ?>" alt="Post Image" class="post-image">
+                            <img src="<?= base_url('images/posts/' . $post['image']) ?>" alt="Post Image" class="post-image-view">
                         </div>
                     <?php endif; ?>
 
                     <p><?= esc($post['content']) ?></p>
+
+                    <!-- ✅ Delete Post Button with Confirmation -->
+                    <?php if (session()->get('user_id') === $post['user_id']) : ?>
+                        <form action="<?= site_url('posts/delete/' . $post['id']) ?>" method="post" onsubmit="return confirmDelete(event);">
+                            <button type="submit" class="btn btn-danger">🗑 Delete Post</button>
+                        </form>
+                    <?php endif; ?>
+
+                    <script>
+                        function confirmDelete(event) {
+                            event.preventDefault(); // Stop form submission
+                            let confirmAction = confirm("❗ Are you sure you want to delete this post? This action cannot be undone.");
+                            if (confirmAction) {
+                                event.target.submit(); // Continue deleting if confirmed
+                            }
+                        }
+                    </script>
+
                 </div>
-
-
             </div>
 
             <!-- Comment Section -->

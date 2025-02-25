@@ -28,30 +28,37 @@ require_once APPPATH . 'Helpers/TimeHelper.php';
                             </div>
                             <button class="vote-btn downvote" data-post-id="<?= $post['id'] ?>">▼</button>
                         </div>
-                        <div class="post-content">
-                            <h5>
-                                <a href="<?= site_url('posts/' . $post['id']) ?>">
-                                    <?= esc($post['title']) ?>
-                                </a>
-                            </h5>
-                            <p><?= substr(esc($post['content']), 0, 100) ?>...</p>
-                            <p class="post-meta">
-                                Posted by
-                                <?php
-                                $username = isset($post['username']) ? esc($post['username']) : 'Anonymous';
-                                $role = isset($post['role']) ? $post['role'] : '';
-                                ?>
-
-                                <strong>
-                                    <a href="<?= site_url('profile/' . $username) ?>" class="user-link">
-                                        <?= ($role === 'admin') ? '<span style="color: gold;">[ADMIN] ' . $username . '</span>' : $username; ?>
+                        <!-- Post Content -->
+                        <div class="post-content-with-image">
+                            <div class="post-text">
+                                <h5>
+                                    <a href="<?= site_url('posts/' . $post['id']) ?>">
+                                        <?= esc($post['title']) ?>
                                     </a>
-                                </strong>
-                                • <?= time_elapsed_string($post['created_at']) ?>
-                            </p>
+                                </h5>
+                                <p><?= substr(esc($post['content']), 0, 100) ?>...</p>
+                                <p class="post-meta">
+                                    Posted by
+                                    <?php
+                                    $username = isset($post['username']) ? esc($post['username']) : 'Anonymous';
+                                    $role = isset($post['role']) ? $post['role'] : '';
+                                    ?>
 
+                                    <strong>
+                                        <a href="<?= site_url('profile/' . $username) ?>" class="user-link">
+                                            <?= ($role === 'admin') ? '<span style="color: gold;">[ADMIN] ' . $username . '</span>' : $username; ?>
+                                        </a>
+                                    </strong>
+                                    • <?= time_elapsed_string($post['created_at']) ?>
+                                </p>
+                            </div>
 
-                            <a href="<?= site_url('posts/' . $post['id']) ?>" class="btn btn-sm btn-primary">Read More</a>
+                            <!-- Display image if available -->
+                            <?php if (!empty($post['image'])) : ?>
+                                <div class="post-image">
+                                    <img src="<?= base_url('images/posts/' . $post['image']) ?>" alt="Post Image">
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                 <?php endforeach; ?>

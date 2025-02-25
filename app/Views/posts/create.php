@@ -30,7 +30,7 @@
         <div class="post-content-section hidden" id="image-content">
             <label for="image" class="form-label">Upload Image</label>
             <input type="file" name="image" class="form-control" accept="image/*" onchange="previewImage(event)">
-            <div class="image-preview mt-2">
+            <div class="image-preview mt-2 mb-2">
                 <img id="imagePreview" src="#" alt="Image Preview" class="hidden">
             </div>
             <textarea name="content" class="form-control text-content-field" rows="5" placeholder="Write something..."></textarea>
