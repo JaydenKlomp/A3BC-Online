@@ -1,5 +1,4 @@
 <?= $this->extend('layout') ?>
-
 <?= $this->section('content') ?>
 
 <div class="dashboard-container">
@@ -335,6 +334,4 @@
         max-height: 350px !important; /* ✅ Ensures the chart stays within a reasonable height */
     }
 </style>
-
-
 <?= $this->endSection() ?>

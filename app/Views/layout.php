@@ -5,7 +5,6 @@ $username = $session->get('username') ?? 'Guest';
 $role = $session->get('role') ?? 'user';
 ?>
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
