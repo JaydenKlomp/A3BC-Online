@@ -19,6 +19,17 @@
             <input type="text" name="title" class="form-control" required placeholder="Enter a title...">
         </div>
 
+        <!-- Community Selection -->
+        <div class="mb-3">
+            <label for="community" class="form-label">Select Community</label>
+            <select name="community_id" class="form-control" required>
+                <option value="">-- Choose a Community --</option>
+                <?php foreach ($communities as $community) : ?>
+                    <option value="<?= $community['id'] ?>"><?= esc($community['name']) ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+
         <!-- Post Content -->
         <div class="post-content-section" id="text-content">
             <label for="content" class="form-label">Text Content</label>

@@ -29,14 +29,15 @@ $role = $session->get('role') ?? 'user'; // Haal de rol op uit de sessie
             <span class="site-name ms-2">A3BC Online</span>
         </a>
 
-        <!-- Right Side: Create Post + Profile -->
+        <!-- Right Side: Create Post + View Communities + Profile -->
         <div class="d-flex align-items-center">
-            <a class="btn btn-primary me-3" href="<?= site_url('posts') ?>">View Posts</a>
+            <a class="btn btn-primary me-3" href="<?= site_url('posts') ?>">For you</a>
+            <a class="btn btn-primary me-3" href="<?= site_url('communities') ?>">Communities</a>
             <a class="btn btn-primary me-3" href="<?= site_url('posts/create') ?>">Create Post</a>
+
             <?php if ($role === 'admin'): ?>
                 <a class="btn btn-primary me-3" href="<?= site_url('dashboard') ?>">Dashboard</a>
             <?php endif; ?>
-
 
             <!-- Profile Dropdown -->
             <div class="dropdown">
@@ -45,7 +46,7 @@ $role = $session->get('role') ?? 'user'; // Haal de rol op uit de sessie
                 <ul class="dropdown-menu dropdown-menu-end">
                     <?php if ($isLoggedIn): ?>
                         <li class="dropdown-header text-center">
-                            <strong><?= htmlspecialchars($username) ?></strong> <!-- Display username inside dropdown -->
+                            <strong><?= htmlspecialchars($username) ?></strong>
                         </li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="<?= site_url('profile/' . $username) ?>">View Profile</a></li>
@@ -54,6 +55,12 @@ $role = $session->get('role') ?? 'user'; // Haal de rol op uit de sessie
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="<?= site_url('settings') ?>">Settings</a></li>
                         <li><a class="dropdown-item" href="<?= site_url('logout') ?>">Log Out</a></li>
+
+                        <?php if ($role === 'admin'): ?>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-success" href="<?= site_url('communities/create') ?>">Create Community</a></li> <!-- ✅ Added -->
+                        <?php endif; ?>
+
                     <?php else: ?>
                         <li><a class="dropdown-item" href="<?= site_url('login') ?>">Log In</a></li>
                         <li><a class="dropdown-item" href="<?= site_url('register') ?>">Register</a></li>
@@ -61,7 +68,6 @@ $role = $session->get('role') ?? 'user'; // Haal de rol op uit de sessie
                 </ul>
             </div>
         </div>
-
     </div>
 </nav>
 

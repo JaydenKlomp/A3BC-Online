@@ -60,6 +60,13 @@ class CommentModel extends Model
             ->orderBy('comments.created_at', 'ASC')
             ->findAll();
     }
+    public function getAllCommentsWithUser()
+    {
+        return $this->select('comments.*, users.username, users.role')
+            ->join('users', 'users.id = comments.user_id', 'left')
+            ->orderBy('comments.created_at', 'DESC')
+            ->findAll();
+    }
 
 
 

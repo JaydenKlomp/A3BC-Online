@@ -31,29 +31,39 @@ class Posts extends BaseController
     // Toont de pagina om een post te maken
     public function create()
     {
-        return view('posts/create');
+        $communityModel = new \App\Models\CommunityModel();
+        $data['communities'] = $communityModel->findAll();
+
+        return view('posts/create', $data);
     }
+
+
 
     // Verwerkt het opslaan van een nieuwe post
     public function store()
     {
         $session = session();
         $postModel = new PostModel();
+        $communityModel = new \App\Models\CommunityModel();
         $userId = $session->get('user_id');
+        $communityId = $this->request->getPost('community_id');
 
         if (!$userId) {
             return redirect()->to('/login')->with('error', 'You must be logged in to post.');
         }
 
-        // Ensure created_at is set
+        if (!$communityModel->find($communityId)) {
+            return redirect()->to('/posts/create')->with('error', 'Selected community does not exist.');
+        }
+
         $postData = [
             'title' => $this->request->getPost('title'),
             'content' => $this->request->getPost('content'),
             'user_id' => $userId,
+            'community_id' => $communityId,
             'created_at' => date('Y-m-d H:i:s') // ✅ Store current timestamp
         ];
 
-        // Handle Image Upload
         $image = $this->request->getFile('image');
         if ($image && $image->isValid() && !$image->hasMoved()) {
             if ($image->getSize() > 5 * 1024 * 1024) { // ✅ Max 5MB file size
@@ -67,13 +77,13 @@ class Posts extends BaseController
             $postData['image'] = $newName;
         }
 
-        // ✅ Insert Post into Database
         if ($postModel->insert($postData)) {
             return redirect()->to('/')->with('success', 'Post created successfully!');
         } else {
             return redirect()->to('/posts/create')->with('error', 'Failed to create post.');
         }
     }
+
 
 
     // Verwerkt upvotes en downvotes op posts
@@ -247,8 +257,8 @@ class Posts extends BaseController
             return redirect()->to('/')->with('error', 'Post not found.');
         }
 
-        // Check if the logged-in user is the owner
-        if ($post['user_id'] !== $userId) {
+        // Check if the logged-in user is the owner or an admin
+        if ($post['user_id'] !== $userId && $session->get('role') !== 'admin') {
             return redirect()->to('/')->with('error', 'You do not have permission to delete this post.');
         }
 
@@ -262,5 +272,35 @@ class Posts extends BaseController
             return redirect()->to('/posts/' . $postId)->with('error', 'Failed to delete post.');
         }
     }
+
+    public function community($communityId)
+    {
+        helper('time');
+        $postModel = new PostModel();
+        $commentModel = new CommentModel();
+        $communityModel = new \App\Models\CommunityModel();
+
+        // ✅ Check if community exists
+        $community = $communityModel->find($communityId);
+        if (!$community) {
+            return redirect()->to('/')->with('error', 'Community not found.');
+        }
+
+        // ✅ Get posts related to this community
+        $posts = $postModel->getPostsByCommunity($communityId);
+
+        // ✅ Add comment count for each post
+        foreach ($posts as &$post) {
+            $post['comment_count'] = $commentModel->where('post_id', $post['id'])->countAllResults();
+        }
+
+        $data = [
+            'posts' => $posts,
+            'community' => $community,
+        ];
+
+        return view('community/community', $data);
+    }
+
 
 }

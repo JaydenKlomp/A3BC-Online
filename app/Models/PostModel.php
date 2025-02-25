@@ -7,7 +7,8 @@ class PostModel extends Model
 {
     protected $table = 'posts'; // Tabelnaam in de database
     protected $primaryKey = 'id'; // Primaire sleutel van de tabel
-    protected $allowedFields = ['title', 'content', 'image', 'link', 'created_at', 'upvotes', 'downvotes', 'user_id', 'image'];
+    protected $allowedFields = ['title', 'content', 'image', 'link', 'created_at', 'upvotes', 'downvotes', 'user_id', 'image', 'community_id'];
+
     // Enable automatic timestamps
 
     protected $createdField  = 'created_at'; // ✅ Tell CI to use "created_at"
@@ -17,8 +18,9 @@ class PostModel extends Model
      */
     public function getPostsWithUser()
     {
-        return $this->select('posts.*, users.username, users.role')
+        return $this->select('posts.*, users.username, users.role, communities.name as community_name')
             ->join('users', 'users.id = posts.user_id', 'left')
+            ->join('communities', 'communities.id = posts.community_id', 'left')
             ->orderBy('posts.created_at', 'DESC')
             ->findAll();
     }
@@ -28,8 +30,9 @@ class PostModel extends Model
      */
     public function getPostWithUserById($id)
     {
-        return $this->select('posts.*, users.username, users.role')
+        return $this->select('posts.*, users.username, users.role, communities.name as community_name')
             ->join('users', 'users.id = posts.user_id', 'left')
+            ->join('communities', 'communities.id = posts.community_id', 'left')
             ->where('posts.id', $id)
             ->first();
     }
@@ -72,8 +75,6 @@ class PostModel extends Model
             ->update();
     }
 
-
-
     public function incrementVote($postId, $voteType)
     {
         return $this->db->table($this->table)
@@ -97,6 +98,16 @@ class PostModel extends Model
         $commentModel->where('post_id', $postId)->delete();
 
         return $this->delete($postId);
+    }
+
+    public function getPostsByCommunity($communityId)
+    {
+        return $this->select('posts.*, users.username, users.role, communities.name as community_name')
+            ->join('users', 'users.id = posts.user_id', 'left')
+            ->join('communities', 'communities.id = posts.community_id', 'left')
+            ->where('posts.community_id', $communityId)
+            ->orderBy('posts.created_at', 'DESC')
+            ->findAll();
     }
 
 
