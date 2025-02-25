@@ -38,3 +38,9 @@ $routes->get('email/confirmed', function() {
 });
 
 $routes->get('test-email', 'MailTest::sendTestEmail');
+
+$routes->get('/settings', 'Settings::index');
+$routes->post('/settings/updateAccount', 'Settings::updateAccount');
+$routes->post('/settings/updateProfile', 'Settings::updateProfile');
+$routes->post('/settings/deleteAccount', 'Settings::deleteAccount');
+

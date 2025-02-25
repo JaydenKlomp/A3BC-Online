@@ -42,22 +42,36 @@ require_once APPPATH . 'Helpers/TimeHelper.php';
                             </div>
 
                             <!-- Post Content -->
-                            <div class="post-content">
-                                <h5>
-                                    <a href="<?= site_url('posts/' . $post['id']) ?>">
-                                        <?= esc($post['title']) ?>
-                                    </a>
-                                </h5>
-                                <p><?= substr(esc($post['content']), 0, 100) ?>...</p>
-                                <p class="post-meta">
-                                    Posted by
-                                    <strong>
-                                        <?= ($post['role'] === 'admin') ? '<span style="color: gold;">[ADMIN] ' . esc($post['username']) . '</span>' : esc($post['username']); ?>
-                                    </strong>
-                                    • <?= time_elapsed_string($post['created_at']) ?>
-                                    • <a href="<?= site_url('posts/' . $post['id']) ?>">💬 <?= $post['comment_count'] ?> Comments</a>
-                                </p>
+                            <div class="post-content-with-image">
+                                <div class="post-text">
+                                    <h5>
+                                        <a href="<?= site_url('posts/' . $post['id']) ?>">
+                                            <?= esc($post['title']) ?>
+                                        </a>
+                                    </h5>
+                                    <p><?= substr(esc($post['content']), 0, 100) ?>...</p>
+                                    <p class="post-meta">
+                                        Posted by
+                                        <?php
+                                        $username = isset($post['username']) ? esc($post['username']) : 'Anonymous';
+                                        $role = isset($post['role']) ? $post['role'] : '';
+                                        ?>
 
+                                        <strong>
+                                            <a href="<?= site_url('profile/' . $username) ?>" class="user-link">
+                                                <?= ($role === 'admin') ? '<span style="color: gold;">[ADMIN] ' . $username . '</span>' : $username; ?>
+                                            </a>
+                                        </strong>
+                                        • <?= time_elapsed_string($post['created_at']) ?>
+                                    </p>
+                                </div>
+
+                                <!-- Display image if available -->
+                                <?php if (!empty($post['image'])) : ?>
+                                    <div class="post-image">
+                                        <img src="<?= base_url('images/posts/' . $post['image']) ?>" alt="Post Image">
+                                    </div>
+                                <?php endif; ?>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -93,6 +107,38 @@ require_once APPPATH . 'Helpers/TimeHelper.php';
     });
 </script>
 
+<style>
+    .post-card {
+        display: flex;
+        align-items: center;
+        background-color: #282828;
+        border: 1px solid #383838;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
+
+    .post-content-with-image {
+        display: flex;
+        flex-grow: 1;
+        justify-content: space-between;
+    }
+
+    .post-text {
+        flex-grow: 1;
+    }
+
+    .post-image {
+        max-width: 120px;
+        max-height: 120px;
+        margin-left: 10px;
+    }
+
+    .post-image img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+    }
+</style>
+
 <?= $this->endSection() ?>
-
-

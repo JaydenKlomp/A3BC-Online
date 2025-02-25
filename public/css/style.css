@@ -506,6 +506,7 @@ a:hover {
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
+    max-height: fit-content;
 }
 
 .profile-banner img {
@@ -540,6 +541,10 @@ a:hover {
     display: flex;
     border-bottom: 2px solid #333;
     margin-bottom: 15px;
+}
+
+.profile-bio{
+    margin-top: 1rem;
 }
 
 .tab-btn {
@@ -620,3 +625,169 @@ a:hover {
     color: #b0b3b8;
 }
 
+/* === SETTINGS PAGE (Reddit Style) === */
+.settings-container {
+    max-width: 800px;
+    margin: 40px auto;
+    background: #1a1a1b;
+    padding: 20px;
+    border-radius: 8px;
+    color: #d7dadc;
+    box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
+}
+
+.settings-tabs {
+    display: flex;
+    border-bottom: 2px solid #343536;
+    margin-bottom: 15px;
+}
+
+.settings-tab {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    color: #d7dadc;
+    background: none;
+    border: none;
+    transition: color 0.2s;
+}
+
+.settings-tab:hover {
+    color: #ff4500;
+}
+
+.settings-tab.active {
+    border-bottom: 3px solid #ff4500;
+    color: #ff4500;
+}
+
+.settings-content {
+    display: none;
+}
+
+.settings-content.active {
+    display: block;
+}
+
+.settings-section {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #272729;
+    border-radius: 8px;
+}
+
+.settings-section h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #ffffff;
+}
+
+.settings-input {
+    width: 100%;
+    padding: 10px;
+    background: #333;
+    border: 1px solid #444;
+    color: #ffffff;
+    border-radius: 5px;
+    margin-top: 5px;
+}
+
+.settings-button {
+    background-color: #ff4500;
+    border: none;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+    display: inline-block;
+}
+
+.settings-button:hover {
+    background-color: #e03e00;
+}
+
+.delete-button {
+    background-color: #d9534f;
+}
+
+.delete-button:hover {
+    background-color: #c9302c;
+}
+
+.alert {
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.alert-success {
+    background-color: #2ecc71;
+    color: white;
+}
+
+.alert-danger {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.user-link {
+    color: #ff4500;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.user-link:hover {
+    text-decoration: underline;
+}
+
+.post-title-profile {
+    color: #d7dadc;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.comment-highlight{
+    margin-bottom: 5px;
+}
+/* ✅ Style for Comment Highlight (Orange) */
+.comment-highlight a {
+    color: #ff4500; /* Reddit Orange */
+    font-size: 22px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.comment-highlight a:hover {
+    color: #e03e00; /* Darker Orange */
+    text-decoration: underline;
+}
+
+/* 🖼️ Post Image Styling */
+.post-image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 15px 0;
+    background: #1a1a1b; /* Dark mode background */
+    border-radius: 8px;
+    overflow: hidden;
+    max-width: 100%;
+}
+
+.post-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.post-image:hover {
+    transform: scale(1.02);
+}

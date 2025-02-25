@@ -41,12 +41,15 @@ require_once APPPATH . 'Helpers/TimeHelper.php';
                                 $username = isset($post['username']) ? esc($post['username']) : 'Anonymous';
                                 $role = isset($post['role']) ? $post['role'] : '';
                                 ?>
-                                <strong>
-                                    <?= ($role === 'admin') ? '<span style="color: gold;">[ADMIN] ' . $username . '</span>' : $username; ?>
-                                </strong>
 
+                                <strong>
+                                    <a href="<?= site_url('profile/' . $username) ?>" class="user-link">
+                                        <?= ($role === 'admin') ? '<span style="color: gold;">[ADMIN] ' . $username . '</span>' : $username; ?>
+                                    </a>
+                                </strong>
                                 • <?= time_elapsed_string($post['created_at']) ?>
                             </p>
+
 
                             <a href="<?= site_url('posts/' . $post['id']) ?>" class="btn btn-sm btn-primary">Read More</a>
                         </div>
@@ -95,8 +98,10 @@ require_once APPPATH . 'Helpers/TimeHelper.php';
         <!-- Community Stats -->
         <div class="sidebar-section">
             <h4>📊 Community Stats</h4>
-            <p>Total Posts: <strong><?= $total_posts ?></strong></p>
-            <p>Total Comments: <strong><?= $total_comments ?></strong></p>
+            <p>Total Posts: <strong><?= /** @var $total_posts */
+                    $total_posts ?></strong></p>
+            <p>Total Comments: <strong><?= /** @var $total_comments */
+                    $total_comments ?></strong></p>
         </div>
     </div>
 </div>

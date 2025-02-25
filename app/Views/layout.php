@@ -40,7 +40,8 @@ $role = $session->get('role') ?? 'user'; // Haal de rol op uit de sessie
 
             <!-- Profile Dropdown -->
             <div class="dropdown">
-                <img src="<?= base_url('images/userprofile.png') ?>" alt="User" class="profile-pic" id="profileDropdown" data-bs-toggle="dropdown">
+                <img src="<?= base_url('images/profilepicture/' . ($session->get('profile_picture') ?? 'default.jpg')) ?>"
+                     alt="User" class="profile-pic" id="profileDropdown" data-bs-toggle="dropdown">
                 <ul class="dropdown-menu dropdown-menu-end">
                     <?php if ($isLoggedIn): ?>
                         <li class="dropdown-header text-center">

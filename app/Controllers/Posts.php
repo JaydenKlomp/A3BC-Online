@@ -37,32 +37,44 @@ class Posts extends BaseController
     // Verwerkt het opslaan van een nieuwe post
     public function store()
     {
-        $session = session(); // Sessie laden
-        $model = new PostModel();
+        $session = session();
+        $postModel = new PostModel();
+        $userId = $session->get('user_id');
 
+        if (!$userId) {
+            return redirect()->to('/login')->with('error', 'You must be logged in to post.');
+        }
+
+        // Ensure created_at is set
         $postData = [
             'title' => $this->request->getPost('title'),
-            'content' => $this->request->getPost('content') ?? '',
-            'created_at' => date('Y-m-d H:i:s'),
-            'user_id' => $session->get('user_id') // Haal de ingelogde gebruiker ID op
+            'content' => $this->request->getPost('content'),
+            'user_id' => $userId,
+            'created_at' => date('Y-m-d H:i:s') // ✅ Store current timestamp
         ];
 
-        // Verwerk afbeelding (indien toegevoegd)
+        // Handle Image Upload
         $image = $this->request->getFile('image');
         if ($image && $image->isValid() && !$image->hasMoved()) {
+            if ($image->getSize() > 5 * 1024 * 1024) { // ✅ Max 5MB file size
+                return redirect()->to('/posts/create')->with('error', 'Image is too large. Max: 5MB');
+            }
+
             $newName = $image->getRandomName();
-            $image->move(WRITEPATH . 'uploads', $newName);
+            if (!$image->move(FCPATH . 'images/posts', $newName)) {
+                return redirect()->to('/posts/create')->with('error', 'Failed to upload image.');
+            }
             $postData['image'] = $newName;
         }
 
-        // Verwerk link (indien toegevoegd)
-        if ($this->request->getPost('link')) {
-            $postData['link'] = $this->request->getPost('link');
+        // ✅ Insert Post into Database
+        if ($postModel->insert($postData)) {
+            return redirect()->to('/')->with('success', 'Post created successfully!');
+        } else {
+            return redirect()->to('/posts/create')->with('error', 'Failed to create post.');
         }
-
-        $model->save($postData);
-        return redirect()->to('/posts');
     }
+
 
     // Verwerkt upvotes en downvotes op posts
     public function vote()
@@ -75,33 +87,49 @@ class Posts extends BaseController
         $voteType = $this->request->getPost('vote_type'); // 'upvotes' or 'downvotes'
         $action = $this->request->getPost('action'); // 'add', 'remove', 'switch'
 
+        if (!$postId || !$voteType || !$action) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Invalid request parameters']);
+        }
+
         $model = new PostModel();
         $post = $model->find($postId);
 
         if (!$post) {
-            return $this->response->setJSON(['success' => false, 'message' => 'Ongeldige post ID']);
+            return $this->response->setJSON(['success' => false, 'message' => 'Invalid post ID']);
         }
 
-        if ($action === 'add') {
-            $model->incrementVote($postId, $voteType);
-            $_SESSION['user_votes'][$postId] = $voteType;
-        } elseif ($action === 'remove') {
-            $model->decrementVote($postId, $voteType);
-            unset($_SESSION['user_votes'][$postId]);
-        } elseif ($action === 'switch') {
-            $oppositeVoteType = ($voteType === 'upvotes') ? 'downvotes' : 'upvotes';
-            $model->decrementVote($postId, $oppositeVoteType);
-            $model->incrementVote($postId, $voteType);
-            $_SESSION['user_votes'][$postId] = $voteType;
-        }
+        $userId = $post['user_id']; // Get the post owner
 
-        $updatedPost = $model->find($postId);
-        return $this->response->setJSON([
-            'success' => true,
-            'upvotes' => $updatedPost['upvotes'],
-            'downvotes' => $updatedPost['downvotes']
-        ]);
+        try {
+            if ($action === 'add') {
+                $model->incrementVote($postId, $voteType);
+                $_SESSION['user_votes'][$postId] = $voteType;
+            } elseif ($action === 'remove') {
+                $model->decrementVote($postId, $voteType);
+                unset($_SESSION['user_votes'][$postId]);
+            } elseif ($action === 'switch') {
+                $oppositeVoteType = ($voteType === 'upvotes') ? 'downvotes' : 'upvotes';
+                $model->decrementVote($postId, $oppositeVoteType);
+                $model->incrementVote($postId, $voteType);
+                $_SESSION['user_votes'][$postId] = $voteType;
+            }
+
+            // Update user karma after vote
+            $model->updateUserKarma($userId);
+
+            $updatedPost = $model->find($postId);
+
+            return $this->response->setJSON([
+                'success' => true,
+                'upvotes' => $updatedPost['upvotes'],
+                'downvotes' => $updatedPost['downvotes']
+            ]);
+        } catch (\Exception $e) {
+            log_message('error', 'Vote error: ' . $e->getMessage());
+            return $this->response->setJSON(['success' => false, 'message' => 'Vote failed']);
+        }
     }
+
 
     // Voegt een nieuwe reactie toe aan een post of een andere reactie
     public function addComment()

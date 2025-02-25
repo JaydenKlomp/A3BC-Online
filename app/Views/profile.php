@@ -5,10 +5,10 @@
     <!-- Left Sidebar -->
     <div class="profile-sidebar">
         <div class="profile-banner">
-            <img src="<?= base_url('images/' . $user['banner']) ?>" alt="Banner">
+            <img src="<?= base_url('images/banners/' . ($user['banner'] ?? 'default-banner.jpg')) ?>" alt="Banner">
         </div>
         <div class="profile-info">
-            <img class="profile-avatar" src="<?= base_url('images/userprofile.png') ?>" alt="Profile">
+            <img class="profile-avatar" src="<?= base_url('images/profilepicture/' . ($user['profile_picture'] ?? 'default.jpg')) ?>" alt="Profile">
             <h2><?= esc($user['username']) ?></h2>
             <?php if ($user['role'] === 'admin'): ?>
                 <span class="badge bg-danger">Admin</span>
@@ -17,12 +17,22 @@
             <?php endif; ?>
 
             <p class="profile-bio"><?= esc($user['bio']) ?: "No bio available." ?></p>
+
             <hr>
-            <p><strong>Karma:</strong> <?= $user['karma'] ?></p>
-            <p><strong>Followers:</strong> <?= $user['followers'] ?></p>
+            <p><strong>Karma:</strong> <?= esc($user['karma']) ?></p>
+            <p><strong>Followers:</strong> <?= esc($user['followers']) ?></p>
             <p><strong>Joined:</strong> <?= date('F j, Y', strtotime($user['account_created'])) ?></p>
+
+            <!-- ✅ Show "Edit Profile" Button If the User is Viewing Their Own Profile -->
+            <?php if (session()->get('username') === $user['username']): ?>
+                <hr>
+                <a href="<?= site_url('settings') ?>" class="btn btn-primary btn-sm mt-2">
+                    ✏ Edit Profile
+                </a>
+            <?php endif; ?>
         </div>
     </div>
+
 
     <!-- Right Side: Posts & Comments -->
     <div class="profile-content">
@@ -50,47 +60,61 @@
             <?php endif; ?>
         </div>
 
-        <!-- 💬 Comments Section (verborgen bij start) -->
+        <!-- 💬 Comments Section -->
         <div id="comments" class="tab-content">
             <?php if (!empty($comments)): ?>
                 <?php foreach ($comments as $comment): ?>
-                    <div class="comment-card">
-                        <p>
+                    <div class="post-card-profile">
+                        <!-- ✅ Post Title (White, Not Clickable) -->
+                        <h3 class="post-title-profile">
+                            <?= esc($comment['post_title']) ?>
+                        </h3>
+
+                        <!-- ✅ Comment Content (Orange, Clickable) -->
+                        <p class="comment-highlight">
                             <a href="<?= site_url('posts/' . $comment['post_id']) ?>#comment-<?= $comment['id'] ?>">
                                 <?= esc(substr($comment['content'], 0, 150)) ?>...
                             </a>
                         </p>
-                        <span class="comment-meta">🕒 <?= date('F j, Y', strtotime($comment['created_at'])) ?></span>
+
+                        <span class="post-meta">🕒 <?= date('F j, Y', strtotime($comment['created_at'])) ?></span>
                     </div>
                 <?php endforeach; ?>
             <?php else: ?>
                 <p class="text-muted">No comments found.</p>
             <?php endif; ?>
         </div>
+
     </div>
 </div>
 
 <script>
     function showTab(tab) {
-        // Verberg alle tab-content divs
+        // Hide all tab-content divs
         document.querySelectorAll('.tab-content').forEach(content => {
             content.style.display = 'none';
         });
 
-        // Verwijder de active class van alle tab-knoppen
+        // Remove active class from all buttons
         document.querySelectorAll('.tab-btn').forEach(button => {
             button.classList.remove('active');
         });
 
-        // Toon de geselecteerde tab en markeer de knop als actief
+        // Show the selected tab and mark the button as active
         document.getElementById(tab).style.display = 'block';
         document.querySelector(`[onclick="showTab('${tab}')"]`).classList.add('active');
     }
 
-    // **Zorg ervoor dat de eerste tab altijd zichtbaar is**
+    // Ensure the first tab is visible when the page loads
     document.addEventListener("DOMContentLoaded", function () {
-        showTab('posts');
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.style.display = 'none'; // Hide all initially
+        });
+
+        document.getElementById('posts').style.display = 'block'; // Show posts by default
+        document.querySelector("[onclick=\"showTab('posts')\"]").classList.add('active');
     });
+
 </script>
 
 <?= $this->endSection() ?>

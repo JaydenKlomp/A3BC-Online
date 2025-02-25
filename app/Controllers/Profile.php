@@ -22,12 +22,18 @@ class Profile extends BaseController
         $posts = [];
         $comments = [];
 
+        // ✅ Fetch user posts
         if ($postModel->db->fieldExists('user_id', 'posts')) {
             $posts = $postModel->where('user_id', $user['id'])->orderBy('created_at', 'DESC')->findAll();
         }
 
+        // ✅ Fetch user comments & join with post title
         if ($commentModel->db->fieldExists('user_id', 'comments')) {
-            $comments = $commentModel->where('user_id', $user['id'])->orderBy('created_at', 'DESC')->findAll();
+            $comments = $commentModel->select('comments.*, posts.title as post_title')
+                ->join('posts', 'posts.id = comments.post_id', 'left')
+                ->where('comments.user_id', $user['id'])
+                ->orderBy('comments.created_at', 'DESC')
+                ->findAll();
         }
 
         $data = [
@@ -38,5 +44,6 @@ class Profile extends BaseController
 
         return view('profile', $data);
     }
+
 
 }

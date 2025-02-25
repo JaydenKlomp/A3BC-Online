@@ -7,7 +7,10 @@ class PostModel extends Model
 {
     protected $table = 'posts'; // Tabelnaam in de database
     protected $primaryKey = 'id'; // Primaire sleutel van de tabel
-    protected $allowedFields = ['title', 'content', 'image', 'link', 'created_at', 'upvotes', 'downvotes', 'user_id'];
+    protected $allowedFields = ['title', 'content', 'image', 'link', 'created_at', 'upvotes', 'downvotes', 'user_id', 'image'];
+    // Enable automatic timestamps
+
+    protected $createdField  = 'created_at'; // ✅ Tell CI to use "created_at"
 
     /**
      * Haal alle posts op met bijbehorende gebruikersinformatie
@@ -54,4 +57,37 @@ class PostModel extends Model
             ->limit(3)
             ->findAll();
     }
+
+    public function updateUserKarma($userId)
+    {
+        // Calculate the total upvotes received by the user across all posts
+        $karma = $this->selectSum('upvotes')
+            ->where('user_id', $userId)
+            ->first()['upvotes'] ?? 0;
+
+        // Update the user's karma in the users table
+        return $this->db->table('users')
+            ->where('id', $userId)
+            ->set('karma', $karma)
+            ->update();
+    }
+
+
+    public function incrementVote($postId, $voteType)
+    {
+        return $this->db->table($this->table)
+            ->set($voteType, $voteType . ' + 1', false)
+            ->where('id', $postId)
+            ->update();
+    }
+
+    public function decrementVote($postId, $voteType)
+    {
+        return $this->db->table($this->table)
+            ->set($voteType, $voteType . ' - 1', false)
+            ->where('id', $postId)
+            ->update();
+    }
+
+
 }

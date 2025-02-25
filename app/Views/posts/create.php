@@ -22,13 +22,18 @@
         <!-- Post Content -->
         <div class="post-content-section" id="text-content">
             <label for="content" class="form-label">Text Content</label>
-            <textarea name="content" class="form-control" rows="5" placeholder="Write something..." required></textarea>
+            <textarea name="content" class="form-control text-content-field" rows="5" placeholder="Write something..."></textarea>
         </div>
+
 
         <!-- Image Upload -->
         <div class="post-content-section hidden" id="image-content">
             <label for="image" class="form-label">Upload Image</label>
-            <input type="file" name="image" class="form-control">
+            <input type="file" name="image" class="form-control" accept="image/*" onchange="previewImage(event)">
+            <div class="image-preview mt-2">
+                <img id="imagePreview" src="#" alt="Image Preview" class="hidden">
+            </div>
+            <textarea name="content" class="form-control text-content-field" rows="5" placeholder="Write something..."></textarea>
         </div>
 
         <!-- Link Submission -->
@@ -42,6 +47,11 @@
 </div>
 
 <script>
+
+    document.querySelector("form").addEventListener("submit", function(event) {
+        console.log("Form submitted!");
+    });
+
     document.querySelectorAll('.post-type-btn').forEach(button => {
         button.addEventListener('click', () => {
             // Remove active state from all buttons
@@ -56,6 +66,32 @@
             document.getElementById(type + '-content').classList.remove('hidden');
         });
     });
+
+    // Preview selected image
+    function previewImage(event) {
+        const image = event.target.files[0];
+        if (image) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                const preview = document.getElementById('imagePreview');
+                preview.src = reader.result;
+                preview.classList.remove('hidden');
+                preview.style.maxWidth = "100%";
+                preview.style.borderRadius = "8px";
+            };
+            reader.readAsDataURL(image);
+        }
+    }
 </script>
+
+<style>
+    .hidden {
+        display: none;
+    }
+    .image-preview img {
+        max-width: 100%;
+        border-radius: 8px;
+    }
+</style>
 
 <?= $this->endSection() ?>

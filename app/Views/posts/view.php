@@ -35,17 +35,32 @@ require_once APPPATH . 'Helpers/TimeHelper.php';
                 <!-- Post Content -->
                 <div class="post-content">
                     <h2 class="post-title"><?= esc($post['title']) ?></h2>
-                    <p class="post-meta text-lightgray">
+                    <p class="post-meta">
                         Posted by
+                        <?php
+                        $username = isset($post['username']) ? esc($post['username']) : 'Anonymous';
+                        $role = isset($post['role']) ? $post['role'] : '';
+                        ?>
+
                         <strong>
-                            <?= ($post['role'] === 'admin') ? '<span style="color: gold;">[ADMIN] ' . esc($post['username']) . '</span>' : esc($post['username']); ?>
+                            <a href="<?= site_url('profile/' . $username) ?>" class="user-link">
+                                <?= ($role === 'admin') ? '<span style="color: gold;">[ADMIN] ' . $username . '</span>' : $username; ?>
+                            </a>
                         </strong>
                         • <?= time_elapsed_string($post['created_at']) ?>
                     </p>
 
-                    <p><?= esc($post['content']) ?></p>
+                    <!-- ✅ Show Image If Post Has One (Styled) -->
+                    <?php if (!empty($post['image'])) : ?>
+                        <div class="post-image-container">
+                            <img src="<?= base_url('images/posts/' . $post['image']) ?>" alt="Post Image" class="post-image">
+                        </div>
+                    <?php endif; ?>
 
+                    <p><?= esc($post['content']) ?></p>
                 </div>
+
+
             </div>
 
             <!-- Comment Section -->
@@ -76,11 +91,18 @@ require_once APPPATH . 'Helpers/TimeHelper.php';
                                     style="color: <?= $userVotedDown ? '#7193ff' : '#818384' ?>">▼</button>
                         </div>
 
+                        <!-- Comment Section -->
                         <div class="comment-content">
                             <p class="comment-meta">
                                 Posted by
+                                <?php
+                                $commentUsername = isset($comment['username']) ? esc($comment['username']) : 'Anonymous';
+                                $commentRole = isset($comment['role']) ? $comment['role'] : '';
+                                ?>
                                 <strong>
-                                    <?= ($comment['role'] === 'admin') ? '<span style="color: gold;">[ADMIN] ' . esc($comment['username']) . '</span>' : esc($comment['username']); ?>
+                                    <a href="<?= site_url('profile/' . $commentUsername) ?>" class="user-link">
+                                        <?= ($commentRole === 'admin') ? '<span style="color: gold;">[ADMIN] ' . $commentUsername . '</span>' : $commentUsername; ?>
+                                    </a>
                                 </strong>
                                 • <?= time_elapsed_string($comment['created_at']) ?>
                             </p>
@@ -100,6 +122,7 @@ require_once APPPATH . 'Helpers/TimeHelper.php';
                                 <?= renderComments($comment['replies'], $level + 1) ?>
                             <?php endif; ?>
                         </div>
+
                     </div>
                 <?php endforeach; ?>
             <?php } ?>
