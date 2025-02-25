@@ -2,7 +2,7 @@
 $session = session();
 $isLoggedIn = $session->has('user_id');
 $username = $session->get('username') ?? 'Guest';
-$role = $session->get('role') ?? 'user'; // Haal de rol op uit de sessie
+$role = $session->get('role') ?? 'user';
 ?>
 
 
@@ -45,12 +45,12 @@ $role = $session->get('role') ?? 'user'; // Haal de rol op uit de sessie
                      alt="User" class="profile-pic" id="profileDropdown" data-bs-toggle="dropdown">
                 <ul class="dropdown-menu dropdown-menu-end">
                     <?php if ($isLoggedIn): ?>
-                        <li class="dropdown-header text-center">
-                            <strong><?= htmlspecialchars($username) ?></strong>
+                        <li class="dropdown-header text-center text-white font-weight-bold">
+                            <strong>Hello, <?= htmlspecialchars($username) ?></strong>
                         </li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="<?= site_url('profile/' . $username) ?>">View Profile</a></li>
-                        <li><a class="dropdown-item" href="<?= site_url('edit-avatar') ?>">Edit Avatar</a></li>
+                        <li><a class="dropdown-item" href="<?= site_url('settings') ?>">Edit Avatar</a></li>
                         <li><a class="dropdown-item" href="<?= site_url('achievements') ?>">Achievements</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="<?= site_url('settings') ?>">Settings</a></li>
@@ -58,7 +58,7 @@ $role = $session->get('role') ?? 'user'; // Haal de rol op uit de sessie
 
                         <?php if ($role === 'admin'): ?>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item text-success" href="<?= site_url('communities/create') ?>">Create Community</a></li> <!-- ✅ Added -->
+                            <li><a class="dropdown-item text-success" href="<?= site_url('communities/create') ?>">Create Community</a></li>
                         <?php endif; ?>
 
                     <?php else: ?>
