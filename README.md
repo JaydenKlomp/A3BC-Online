@@ -88,7 +88,7 @@ The **Dashboard** provides real-time insights into the platform:
 │── 📁 writable/             # Cache, logs, uploads
 │── 📄 .env                  # Environment variables
 │── 📄 README.md             # This file
-│── 📄 database.sql          # Database structure
+│── 📄 codeigniter.sql          # Database structure
 ```
 
 ---
