@@ -53,9 +53,9 @@ database.default.DBDriver = MySQLi
 ```
 
 ### 3️⃣ Import the Database
-- Import `database.sql` into MySQL using PhpMyAdmin or CLI:
+- Import `codeigniter.sql` into MySQL using PhpMyAdmin or CLI:
 ```bash
-mysql -u root -p a3bc < database.sql
+mysql -u root -p a3bc < codeigniter.sql
 ```
 
 ### 4️⃣ Start the Development Server
@@ -88,7 +88,7 @@ The **Dashboard** provides real-time insights into the platform:
 │── 📁 writable/             # Cache, logs, uploads
 │── 📄 .env                  # Environment variables
 │── 📄 README.md             # This file
-│── 📄 database.sql          # Database structure
+│── 📄 codeigniter.sql          # Database structure
 ```
 
 ---
