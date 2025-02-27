@@ -9,11 +9,10 @@ A3BC Online is a **Reddit-style discussion platform** built using **CodeIgniter 
 
 ## 📌 Features
 ✅ **User-Generated Content** – Create, view, and comment on posts  
+✅ **User Registration & Login System** - Register and login system with your own profile
 ✅ **Upvote & Downvote System** – Vote on posts and comments dynamically  
 ✅ **Comment Nesting** – Reply to comments in a Reddit-style thread  
-✅ **Sorting Options** – Sort posts by `Hot`, `New`, `Top`, or `Rising`  
-✅ **Dashboard Analytics** – View total posts, comments, upvotes/downvotes with graphs  
-✅ **Dark Mode UI** – Inspired by Reddit's modern dark theme  
+✅ **Dashboard Analytics** – View total posts, comments, upvotes/downvotes with graphs   
 ✅ **Customizable Communities (WIP)** – Users can create & manage communities
 
 ---
@@ -27,7 +26,6 @@ A3BC Online is a **Reddit-style discussion platform** built using **CodeIgniter 
 | ⚡ JavaScript (Vanilla) | Client-side interactions |
 | 📊 Chart.js | Data visualization for analytics |
 | 🛢️ MySQL | Database for storing posts & comments |
-| 🎛️ PhpMyAdmin | Database management |
 
 ---
 
@@ -88,7 +86,7 @@ The **Dashboard** provides real-time insights into the platform:
 │── 📁 writable/             # Cache, logs, uploads
 │── 📄 .env                  # Environment variables
 │── 📄 README.md             # This file
-│── 📄 codeigniter.sql          # Database structure
+│── 📄 codeigniter.sql       # Database structure
 ```
 
 ---
