@@ -9,7 +9,6 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('profile/(:any)', 'Profile::index/$1');
 
 $routes->get('/', 'Posts::landing');
-$routes->get('posts', 'Posts::index');
 $routes->get('posts/create', 'Posts::create');
 $routes->post('posts/store', 'Posts::store');
 $routes->post('posts/vote', 'Posts::vote');

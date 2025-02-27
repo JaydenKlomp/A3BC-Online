@@ -3,11 +3,16 @@ body {
     color: #e0e0e0;
     font-family: Arial, sans-serif;
 }
-/* Navbar */
+/* ✅ Sticky Navbar */
 .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
     background-color: #1a1a1b;
     padding: 10px 20px;
+    border-bottom: 1px solid #343536;
 }
+
 /* Site Logo */
 .site-logo {
     height: 35px;
@@ -58,6 +63,7 @@ body {
     flex-direction: column;
     align-items: center;
     margin-right: 15px; /* Space between votes and content */
+    justify-content: center;
 }
 .vote-btn {
     background: none;
@@ -796,6 +802,7 @@ a:hover {
     display: flex;
     flex-grow: 1;
     justify-content: space-between;
+    align-items: center;
 }
 
 .post-text {
@@ -805,7 +812,7 @@ a:hover {
 
 .post-image {
     max-width: 120px;
-    max-height: 120px;
+    max-height: fit-content;
     margin-left: 10px;
 }
 

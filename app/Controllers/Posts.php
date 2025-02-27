@@ -2,32 +2,84 @@
 namespace App\Controllers;
 use App\Models\PostModel;
 use App\Models\CommentModel;
+use App\Models\CommunityModel;
+use CodeIgniter\Controller;
+
 
 class Posts extends BaseController
 {
-    // Haalt alle posts op en sorteert ze op basis van de geselecteerde filter
-    public function index()
+
+    public function landing()
     {
         helper('time');
-        $model = new PostModel();
+        $postModel = new PostModel();
         $commentModel = new CommentModel();
+        $communityModel = new CommunityModel();
+        $session = session();
 
-        $sort = $this->request->getGet('sort') ?? 'hot'; // Bepaalt de sorteermethode
+        // ✅ Fetch all posts with user & community info
+        $data['posts'] = $postModel->select('posts.*, users.username, users.role, communities.id as community_id, communities.name as community_name')
+            ->join('users', 'users.id = posts.user_id', 'left')
+            ->join('communities', 'communities.id = posts.community_id', 'left')
+            ->orderBy('posts.created_at', 'DESC')
+            ->findAll();
 
-        // Haal posts op met gebruikersinformatie
-        $posts = $model->getPostsWithUser();
+        $sort = $this->request->getGet('sort') ?? 'hot';
 
-        // Voeg aantal reacties toe aan elke post
-        foreach ($posts as &$post)
-        {
-            $post['comment_count'] = $commentModel->where('post_id', $post['id'])->countAllResults();
+        if ($sort === 'new') {
+            $orderBy = 'posts.created_at DESC';
+        } elseif ($sort === 'top') {
+            $orderBy = '(posts.upvotes - posts.downvotes) DESC'; // Sort by net votes
+        } elseif ($sort === 'rising') {
+            $orderBy = '(posts.upvotes - posts.downvotes) DESC, posts.created_at DESC'; // Net votes + newest first
+        } else { // Default: "Hot" sorting
+            $orderBy = '(posts.upvotes - posts.downvotes) DESC, posts.created_at DESC';
         }
 
-        $data['posts'] = $posts;
-        $data['currentSort'] = ucfirst($sort); // Houd de huidige sorteermethode bij in de UI
-        return view('posts/index', $data);
-    }
+        $data['currentSort'] = ucfirst($sort);
+        $data['posts'] = $postModel->select('posts.*, users.username, users.role, communities.id as community_id, communities.name as community_name, (posts.upvotes - posts.downvotes) as net_votes')
+            ->join('users', 'users.id = posts.user_id', 'left')
+            ->join('communities', 'communities.id = posts.community_id', 'left')
+            ->orderBy($orderBy)
+            ->findAll();
 
+
+
+        // ✅ Fetch featured posts
+        $data['featured_posts'] = $postModel->getFeaturedPosts();
+
+        // ✅ Fetch trending posts
+        $data['trending_posts'] = $postModel->getTrendingPosts();
+
+        // ✅ Fetch latest comments with community info
+        $data['latest_comments'] = $commentModel->select('comments.*, posts.id as post_id, communities.id as community_id, communities.name as community_name')
+            ->join('posts', 'posts.id = comments.post_id')
+            ->join('communities', 'communities.id = posts.community_id', 'left')
+            ->orderBy('comments.created_at', 'DESC')
+            ->limit(5)
+            ->findAll();
+
+        // ✅ Fetch total counts
+        $data['total_posts'] = $postModel->countAll();
+        $data['total_comments'] = $commentModel->countAll();
+        $data['total_communities'] = $communityModel->countAll();
+
+        // ✅ Fetch all communities for the left sidebar
+        $data['communities'] = $communityModel->orderBy('name', 'ASC')->findAll();
+
+        // ✅ Manage Recent Communities (Session-based)
+        $recentCommunities = $session->get('recent_communities') ?? [];
+        if (!empty($recentCommunities)) {
+            $data['recent_communities'] = $communityModel
+                ->whereIn('id', $recentCommunities)
+                ->orderBy('FIELD(id, ' . implode(',', $recentCommunities) . ')')
+                ->findAll();
+        } else {
+            $data['recent_communities'] = [];
+        }
+
+        return view('landing', $data);
+    }
     // Toont de pagina om een post te maken
     public function create()
     {
@@ -178,27 +230,7 @@ class Posts extends BaseController
 
 
     // Haalt gegevens op voor de landingspagina
-    public function landing()
-    {
-        helper('time');
-        $postModel = new PostModel();
-        $commentModel = new CommentModel();
 
-        // Haal featured posts op met gebruikersinformatie
-        $data['featured_posts'] = $postModel->getFeaturedPosts();
-
-        // Haal trending posts op met gebruikersinformatie
-        $data['trending_posts'] = $postModel->getTrendingPosts();
-
-        // Haal de nieuwste reacties op
-        $data['latest_comments'] = $commentModel->orderBy('created_at', 'DESC')->limit(5)->findAll();
-
-        // Tel het totaal aantal posts en reacties
-        $data['total_posts'] = $postModel->countAll();
-        $data['total_comments'] = $commentModel->countAll();
-
-        return view('landing', $data);
-    }
 
 
     // Verwerkt upvotes en downvotes op reacties
@@ -300,6 +332,35 @@ class Posts extends BaseController
         ];
 
         return view('community/community', $data);
+    }
+
+
+
+    public function viewCommunity($communityId)
+    {
+        $session = session();
+        $communityModel = new CommunityModel();
+        $postModel = new PostModel();
+        helper('time');
+
+        // ✅ Fetch community info
+        $community = $communityModel->find($communityId);
+        if (!$community) {
+            return redirect()->to('/')->with('error', 'Community not found.');
+        }
+
+        // ✅ Fetch posts for this community
+        $posts = $postModel->getPostsByCommunity($communityId);
+
+        // ✅ Store recent community visit in session
+        $recentCommunities = $session->get('recent_communities') ?? [];
+        $recentCommunities = array_unique(array_merge([$communityId], $recentCommunities));
+        if (count($recentCommunities) > 5) {
+            array_pop($recentCommunities); // Keep only the last 5
+        }
+        $session->set('recent_communities', $recentCommunities);
+
+        return view('community/community', ['community' => $community, 'posts' => $posts]);
     }
 
 

@@ -30,7 +30,6 @@ $role = $session->get('role') ?? 'user';
 
         <!-- Right Side: Create Post + View Communities + Profile -->
         <div class="d-flex align-items-center">
-            <a class="btn btn-primary me-3" href="<?= site_url('posts') ?>">For you</a>
             <a class="btn btn-primary me-3" href="<?= site_url('communities') ?>">Communities</a>
             <a class="btn btn-primary me-3" href="<?= site_url('posts/create') ?>">Create Post</a>
 

@@ -109,19 +109,27 @@ require_once APPPATH . 'Helpers/TimeHelper.php';
 
                         <!-- Comment Section -->
                         <div class="comment-content">
-                            <p class="comment-meta">
+                            <p class="post-meta">
+                                <?php if (!empty($post['community_id'])) : ?>
+                                    <a href="<?= site_url('communities/view/' . $post['community_id']) ?>" class="community-link">
+                                        r/<?= esc($post['community_name']) ?>
+                                    </a>
+                                    •
+                                <?php endif; ?>
+
                                 Posted by
                                 <?php
-                                $commentUsername = isset($comment['username']) ? esc($comment['username']) : 'Anonymous';
-                                $commentRole = isset($comment['role']) ? $comment['role'] : '';
+                                $username = isset($post['username']) ? esc($post['username']) : 'Anonymous';
+                                $role = isset($post['role']) ? $post['role'] : '';
                                 ?>
                                 <strong>
-                                    <a href="<?= site_url('profile/' . $commentUsername) ?>" class="user-link">
-                                        <?= ($commentRole === 'admin') ? '<span style="color: gold;">[ADMIN] ' . $commentUsername . '</span>' : $commentUsername; ?>
+                                    <a href="<?= site_url('profile/' . $username) ?>" class="user-link">
+                                        <?= ($role === 'admin') ? '<span style="color: gold;">[ADMIN] ' . $username . '</span>' : $username; ?>
                                     </a>
                                 </strong>
-                                • <?= time_elapsed_string($comment['created_at']) ?>
+                                • <?= time_elapsed_string($post['created_at']) ?>
                             </p>
+
 
                             <p><?= esc($comment['content']) ?></p>
 
