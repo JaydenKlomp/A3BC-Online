@@ -7,11 +7,13 @@ class PostModel extends Model
 {
     protected $table = 'posts'; // Tabelnaam in de database
     protected $primaryKey = 'id'; // Primaire sleutel van de tabel
-    protected $allowedFields = ['title', 'content', 'image', 'link', 'created_at', 'upvotes', 'downvotes', 'user_id', 'image', 'community_id'];
+    protected $allowedFields = ['title', 'content', 'image', 'link', 'created_at', 'upvotes', 'downvotes', 'user_id', 'community_id'];
 
     // Enable automatic timestamps
 
     protected $createdField  = 'created_at'; // ✅ Tell CI to use "created_at"
+    protected $updatedField  = 'updated_at';
+
 
     /**
      * Haal alle posts op met bijbehorende gebruikersinformatie

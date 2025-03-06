@@ -210,26 +210,39 @@ class Posts extends BaseController
         return redirect()->to('/posts/' . $this->request->getPost('post_id'));
     }
 
-    // Toont een enkele post met reacties
     public function view($id)
     {
         helper('time');
         $postModel = new PostModel();
         $commentModel = new CommentModel();
 
-        $data['post'] = $postModel->getPostWithUserById($id);
-        $data['comments'] = $commentModel->getCommentsWithUser($id); // Zorgt voor gebruikersinformatie bij reacties
+        // ✅ Fetch post details
+        $post = $postModel->getPostWithUserById($id);
 
-        // Haal trending posts op (meest upvoted)
-        $data['trendingPosts'] = $postModel->orderBy('upvotes', 'DESC')
+        // ✅ Debugging Step: Check if post exists
+        if (!$post || empty($post)) {
+            die('⚠ Error: Post with ID ' . $id . ' not found in the database.');
+        }
+
+        // ✅ Fetch comments
+        $comments = $commentModel->getCommentsWithUser($id) ?? [];
+
+        // ✅ Fetch trending posts
+        $trendingPosts = $postModel
+            ->select('posts.*, users.username, users.role, (posts.upvotes - posts.downvotes) as net_votes', false)
+            ->join('users', 'users.id = posts.user_id', 'left')
+            ->orderBy('net_votes', 'DESC')
             ->limit(5)
             ->findAll();
 
-        return view('posts/view', $data);
+        // ✅ Pass variables to the view
+        return view('posts/view', [
+            'post' => $post,
+            'comments' => $comments,
+            'trendingPosts' => $trendingPosts
+        ]);
     }
 
-
-    // Haalt gegevens op voor de landingspagina
 
 
 

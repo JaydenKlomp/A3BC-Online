@@ -1,7 +1,14 @@
 <?php
 require_once APPPATH . 'Helpers/TimeHelper.php';
 /** @var $trendingPosts */
+
+// ✅ Ensure $post is available to avoid errors
+if (!isset($post) || empty($post)) {
+    echo "<p class='text-danger'>⚠ Error: Post not found.</p>";
+    return;
+}
 ?>
+
 
 <?= $this->extend('layout') ?>
 
